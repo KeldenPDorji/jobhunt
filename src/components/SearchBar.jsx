@@ -19,7 +19,7 @@ function SearchBar({ onSearch, loading }) {
             <Search size={20} className="input-icon" />
             <input
               type="text"
-              placeholder="Job title, keywords, or company"
+              placeholder="e.g. Software Engineer, DevOps, Data Scientist"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="search-input"

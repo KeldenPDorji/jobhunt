@@ -3,15 +3,37 @@ import axios from 'axios';
 // Using The Muse API - Completely FREE, no API key needed!
 // Fallback to other APIs if needed
 
-export const fetchJobs = async (query = 'software developer', location = '') => {
+// Helper function to clean HTML from descriptions
+const cleanHTMLDescription = (html) => {
+  if (!html) return '';
+  
+  // Create a temporary div to parse HTML
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  
+  // Get text content
+  let text = doc.body.textContent || '';
+  
+  // Clean up extra whitespace and newlines
+  text = text
+    .replace(/\n\s*\n\s*\n/g, '\n\n') // Multiple newlines to double newline
+    .replace(/[ \t]+/g, ' ') // Multiple spaces to single space
+    .trim();
+  
+  // Limit length for preview (full text available on expand)
+  return text;
+};
+
+export const fetchJobs = async (query = 'software engineer', location = '') => {
   try {
     // PRIMARY: The Muse API - No API key required!
-    console.log('🔍 Fetching real jobs from The Muse API...');
+    // Focus on Tech & IT jobs only
+    console.log('🔍 Fetching real tech jobs from The Muse API...');
     try {
       const museResponse = await axios.get('https://www.themuse.com/api/public/jobs', {
         params: {
           page: 0,
           descending: true,
+          category: 'Software Engineering', // Filter for tech jobs
           ...(query && { search: query }),
           ...(location && { location: location })
         }
@@ -24,7 +46,7 @@ export const fetchJobs = async (query = 'software developer', location = '') => 
           title: job.name,
           company: job.company.name,
           location: job.locations?.map(loc => loc.name).join(', ') || 'Remote',
-          description: job.contents || 'No description available',
+          description: cleanHTMLDescription(job.contents) || 'No description available',
           type: job.type || 'Full-time',
           salary: 'Not specified',
           datePosted: job.publication_date,
@@ -66,7 +88,7 @@ export const fetchJobs = async (query = 'software developer', location = '') => 
           title: job.job_title,
           company: job.employer_name,
           location: job.job_city && job.job_country ? `${job.job_city}, ${job.job_country}` : job.job_country || 'Remote',
-          description: job.job_description || 'No description available',
+          description: cleanHTMLDescription(job.job_description) || 'No description available',
           type: job.job_employment_type || 'Full-time',
           salary: job.job_salary || 'Not specified',
           datePosted: job.job_posted_at_datetime_utc,
@@ -110,7 +132,7 @@ export const fetchJobs = async (query = 'software developer', location = '') => 
           title: job.title,
           company: job.company.display_name,
           location: job.location.display_name,
-          description: job.description,
+          description: cleanHTMLDescription(job.description),
           type: job.contract_time || 'Full-time',
           salary: job.salary_min && job.salary_max 
             ? `$${Math.round(job.salary_min / 1000)}k - $${Math.round(job.salary_max / 1000)}k`

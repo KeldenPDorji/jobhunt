@@ -8,9 +8,9 @@
 
 .job-list-header h2 {
   font-size: 1.5rem;
-  color: white;
+  color: #e2e8f0;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .job-cards {
@@ -27,7 +27,9 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: white;
+  background: rgba(30, 41, 59, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 16px;
   padding: 3rem;
   text-align: center;
@@ -35,29 +37,29 @@
 
 .loading-container p,
 .empty-container p {
-  color: #64748b;
+  color: #94a3b8;
   font-size: 1.1rem;
   margin-top: 1rem;
 }
 
 .empty-container svg {
-  color: #cbd5e1;
+  color: #475569;
   margin-bottom: 1rem;
 }
 
 .empty-container h3 {
-  color: #1e293b;
+  color: #e2e8f0;
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
 .error-container p {
-  color: #ef4444;
+  color: #f87171;
   font-size: 1.1rem;
 }
 
 .loading-container .spinner {
-  color: #667eea;
+  color: #818cf8;
   animation: spin 1s linear infinite;
 }
 

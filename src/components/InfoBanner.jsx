@@ -8,8 +8,8 @@ function InfoBanner({ onClose }) {
       <div className="info-content">
         <Info size={20} />
         <div className="info-text">
-          <strong>100% Real Jobs!</strong> Fetching live job listings from The Muse API. 
-          <span className="info-link"> No mock data - all jobs are real and currently open.</span>
+          <strong>Tech Jobs Only!</strong> Search thousands of real tech & IT positions. 
+          <span className="info-link"> Software, DevOps, Data, Cloud & more.</span>
         </div>
       </div>
       <button onClick={onClose} className="info-close">

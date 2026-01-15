@@ -11,7 +11,7 @@ function Header() {
             <Briefcase size={32} />
             <h1>RealJob</h1>
           </div>
-          <p className="tagline">Find Your Dream Job Today</p>
+          <p className="tagline">Find Your Dream Tech Job Today</p>
         </div>
       </div>
     </header>
