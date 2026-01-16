@@ -129,8 +129,8 @@
 
 .description-preview {
   color: #cbd5e1;
-  line-height: 1.7;
-  margin-bottom: 0.5rem;
+  line-height: 1.8;
+  margin-bottom: 0.75rem;
 }
 
 .description-full {
@@ -138,7 +138,7 @@
 }
 
 .description-section {
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 .description-section:last-child {
@@ -149,16 +149,15 @@
   color: #e2e8f0;
   font-size: 1.05rem;
   font-weight: 700;
-  margin-bottom: 0.875rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid rgba(99, 102, 241, 0.3);
-  text-transform: capitalize;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .description-paragraph {
   color: #cbd5e1;
-  line-height: 1.75;
-  margin-bottom: 0.875rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
 }
 
 .description-paragraph:last-child {
@@ -173,14 +172,14 @@
 .description-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 1rem 0;
 }
 
 .description-list li {
   color: #cbd5e1;
-  line-height: 1.75;
-  padding-left: 1.75rem;
-  margin-bottom: 0.75rem;
+  line-height: 1.8;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
   position: relative;
 }
 
@@ -189,12 +188,12 @@
 }
 
 .description-list li:before {
-  content: "▸";
+  content: "•";
   color: #818cf8;
   font-weight: bold;
   position: absolute;
-  left: 0.5rem;
-  font-size: 1.1rem;
+  left: 0;
+  font-size: 1.2rem;
 }
 
 .description-list li strong {

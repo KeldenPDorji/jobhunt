@@ -39,125 +39,61 @@ function JobCard({ job }) {
     return cleaned.substring(0, maxLength).trim() + '...';
   };
 
-  // Clean and format HTML from description
+  // Clean and format HTML from description - keep it simple and working
   const cleanDescription = (html) => {
     if (!html) return 'No description available';
     
-    // Convert HTML to clean, well-formatted text
-    let text = html
-      // Handle headers - preserve them with special markers
-      .replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '\n\n###HEADER###$1###ENDHEADER###\n')
-      // Handle paragraphs
-      .replace(/<p[^>]*>/gi, '\n')
-      .replace(/<\/p>/gi, '\n')
-      // Handle line breaks
-      .replace(/<br\s*\/?>/gi, '\n')
-      // Handle lists - convert to bullets
-      .replace(/<ul[^>]*>/gi, '\n')
-      .replace(/<\/ul>/gi, '\n')
-      .replace(/<ol[^>]*>/gi, '\n')
-      .replace(/<\/ol>/gi, '\n')
-      .replace(/<li[^>]*>/gi, '• ')
-      .replace(/<\/li>/gi, '\n')
-      // Handle strong/bold - keep emphasis
-      .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
-      .replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**')
-      // Remove all remaining HTML tags
-      .replace(/<[^>]*>/g, '')
-      // Handle HTML entities
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/&rsquo;/g, "'")
-      .replace(/&lsquo;/g, "'")
-      .replace(/&rdquo;/g, '"')
-      .replace(/&ldquo;/g, '"')
-      // Clean up whitespace
-      .replace(/\n\s*\n\s*\n+/g, '\n\n')  // Max 2 consecutive newlines
-      .replace(/[ \t]+/g, ' ')              // Single spaces
-      .replace(/^\s+|\s+$/gm, '')           // Trim each line
+    // Create a simple text version by removing HTML tags properly
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    
+    // Get the text content
+    let text = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Clean up whitespace
+    text = text
+      .replace(/\s+/g, ' ')  // Multiple spaces to single space
       .trim();
     
     return text;
   };
 
   const formatDescription = (text) => {
-    if (!text) return [];
+    if (!text || text.length < 20) return [];
     
-    // Common section headers to detect
-    const sectionKeywords = [
-      'responsibilities', 'requirements', 'qualifications', 'skills',
-      'benefits', 'perks', 'what we offer', 'what you\'ll do', 
-      'about the role', 'about you', 'required', 'preferred',
-      'we are looking for', 'your profile', 'nice to have',
-      'education', 'experience', 'technologies', 'tech stack'
-    ];
+    // Split into paragraphs at sentence boundaries
+    // Look for periods followed by capital letters or double spaces
+    const sentences = text.match(/[^.!?]+[.!?]+(?:\s+|$)/g) || [text];
     
-    const lines = text.split('\n');
+    // Group sentences into paragraphs (3-4 sentences each)
     const sections = [];
-    let currentSection = { title: null, content: [], isList: false };
+    let currentParagraph = [];
+    let charCount = 0;
     
-    lines.forEach((line, index) => {
-      const trimmed = line.trim();
+    sentences.forEach((sentence, idx) => {
+      const trimmed = sentence.trim();
+      if (!trimmed) return;
       
-      // Skip empty lines
-      if (!trimmed) {
-        if (currentSection.content.length > 0) {
-          sections.push({ ...currentSection });
-          currentSection = { title: null, content: [], isList: false };
+      currentParagraph.push(trimmed);
+      charCount += trimmed.length;
+      
+      // Create a new paragraph every 3-5 sentences or 400 characters
+      if ((currentParagraph.length >= 3 && charCount > 300) || 
+          charCount > 400 ||
+          idx === sentences.length - 1) {
+        
+        if (currentParagraph.length > 0) {
+          sections.push({
+            title: null,
+            content: [currentParagraph.join(' ')],
+            isList: false
+          });
         }
-        return;
-      }
-      
-      // Check if line is a marked header
-      if (trimmed.includes('###HEADER###')) {
-        if (currentSection.content.length > 0) {
-          sections.push({ ...currentSection });
-        }
-        const headerText = trimmed.replace(/###HEADER###|###ENDHEADER###/g, '').trim();
-        currentSection = { title: headerText, content: [], isList: false };
-        return;
-      }
-      
-      // Check if line looks like a section header
-      const lowerLine = trimmed.toLowerCase();
-      const isLikelyHeader = 
-        sectionKeywords.some(keyword => lowerLine.startsWith(keyword)) &&
-        trimmed.length < 60 &&
-        (trimmed.endsWith(':') || trimmed.endsWith('?') || (index > 0 && !lines[index - 1].trim()));
-      
-      if (isLikelyHeader) {
-        if (currentSection.content.length > 0) {
-          sections.push({ ...currentSection });
-        }
-        currentSection = { 
-          title: trimmed.replace(/:$/, ''), 
-          content: [], 
-          isList: false 
-        };
-        return;
-      }
-      
-      // Check if line is a bullet point
-      const isBullet = trimmed.startsWith('•') || 
-                       trimmed.startsWith('-') || 
-                       trimmed.startsWith('*') ||
-                       /^\d+[\.)]\s/.test(trimmed);
-      
-      if (isBullet) {
-        currentSection.isList = true;
-        currentSection.content.push(trimmed.replace(/^[•\-*]\s*/, '').replace(/^\d+[\.)]\s*/, ''));
-      } else {
-        currentSection.content.push(trimmed);
+        
+        currentParagraph = [];
+        charCount = 0;
       }
     });
-    
-    if (currentSection.content.length > 0) {
-      sections.push(currentSection);
-    }
     
     return sections;
   };
